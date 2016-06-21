@@ -1,0 +1,4 @@
+Are you sure you want to perform the following operation(s):
+Create Table "main"."book"
+SQL:
+CREATE  TABLE "main"."book" ("id" integer PRIMARY KEY  AUTOINCREMENT  NOT NULL , "name" varchar, "book_code" varchar)

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="jar/Altibase5.jar"/>
+	<classpathentry kind="lib" path="jar/exRepCL.jar"/>
+	<classpathentry kind="lib" path="jar/exRepCommon.jar"/>
+	<classpathentry kind="lib" path="jar/exRepFW.jar"/>
+	<classpathentry kind="lib" path="jar/ibatis-2.3.4.726.jar"/>
+	<classpathentry kind="lib" path="jar/jxl.jar"/>
+	<classpathentry kind="lib" path="jar/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="jar/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="jar/slf4j-api-1.5.10.jar"/>
+	<classpathentry kind="lib" path="jar/slf4j-log4j12-1.5.10.jar"/>
+	<classpathentry kind="lib" path="jar/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry kind="lib" path="jar/sqljdbc4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

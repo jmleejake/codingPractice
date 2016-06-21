@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TestDBdel">
+
+	<typeAlias alias="TestDBdel"	type="testDBdelete.TestDBdel"/>
+	<typeAlias alias="MyWork"	type="testDBdelete.MyWorkFolderDTO"/>
+	
+	<select id="TestDBdel.selectContentPath" resultClass="TestDBdel">
+		SELECT p.page_id, p.content_path path, f.doc_id 
+		FROM xr_page p 
+		INNER JOIN xr_filed f ON p.page_id = f.page_id
+		WHERE p.page_id IN
+		(SELECT page_id 
+		FROM xr_filed 
+		WHERE doc_id IN
+		(SELECT doc_id 
+		FROM xr_document 
+		WHERE doc_status = 'E'))
+	</select>
+	
+	<select id="TestDBdel.selectContentPathCount" resultClass="Integer">
+		SELECT COUNT(content_path) 
+		FROM xr_page 
+		WHERE page_id IN
+		(SELECT page_id 
+		FROM xr_filed 
+		WHERE doc_id IN
+		(SELECT doc_id 
+		FROM xr_document 
+		WHERE doc_status = 'E'))
+	</select>
+	
+	<update id="TestDBdel.deletePage" parameterClass="String">
+		DELETE FROM xr_page WHERE page_id = #page_id#
+	</update>
+	
+	<update id="TestDBdel.deleteFiled" parameterClass="String">
+		DELETE FROM xr_filed WHERE doc_id = #doc_id#
+	</update>
+	
+	<update id="TestDBdel.deleteLinked" parameterClass="String">
+		DELETE FROM xr_linked WHERE content_id = #doc_id#
+	</update>
+	
+	<update id="TestDBdel.deleteLinkedDel" parameterClass="String">
+		DELETE FROM xr_linked_del WHERE content_id = #doc_id#
+	</update>
+	
+	<update id="TestDBdel.deleteDocument" parameterClass="String">
+		DELETE FROM xr_document WHERE doc_id = #doc_id# AND doc_status = 'E'
+	</update>
+	
+	<select id="TestDBdel.selectErasedDocument" resultClass="TestDBdel">
+		SELECT doc_id FROM xr_document WHERE doc_status = 'E'
+	</select>
+	
+	<select id="TestDBdel.selectErasedDocumentCount" resultClass="Integer">
+		SELECT COUNT(doc_id) FROM xr_document WHERE doc_status = 'E'
+	</select>
+	
+	<select id="selectMyWorkFolder" resultClass="MyWork">
+		select folder_id, folder_name, creator_id, creator_name, map_id
+		from xr_folder
+		where folder_id like 'his%' and map_id = 'MYPAGE'
+	</select>
+	
+	<update id="updateCreator" parameterClass="MyWork">
+		update xr_folder
+		set creator_id = #creator_id#,
+			creator_name = #creator_name#
+		where folder_id = #folder_id# and map_id = 'MYPAGE'	
+	</update>
+
+</sqlMap>
