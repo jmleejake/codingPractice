@@ -39,7 +39,7 @@ public class NIOServer implements Runnable
 		System.out.println("---- Client의 접속을 기다립니다... ----");
 	}
 	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unused" })
 	public void run()
 	{
 		// SocketChannel용 변수를 미리 만들어 둡니다.
@@ -104,9 +104,12 @@ public class NIOServer implements Runnable
 						// 읽기 요청 이라면
 						else if (selected.isReadable())
 						{
+							StringBuffer str = new StringBuffer();
 							// 소켓 채널로 데이터를 읽어 들입니다.
 							try
 							{
+								// read할 내용의 buffer수를 print하는데 왜 총길이의 +2인지 모르겠음
+								str.append("socketChannel read: " + socketChannel.read(buff) + "\n");
 								socketChannel.read(buff);
 								// 데이터가 있다면
 								if (buff.position() != 0)
@@ -114,17 +117,26 @@ public class NIOServer implements Runnable
 									buff.clear();
 									System.out.print("클라이언트로 전달된 내용 : ");
 									// Non-Blocking Mode이므로 데이터가 모두 전달될때 까지 기다림
+									str.append("from client msg: ");
+									
+									char var = 0;
+									
 									while (buff.hasRemaining())
 									{
-										System.out.print((char) buff.get());
+										//str.append("print char buffer get: " + (char) buff.get() + "\n");
+										var = (char) buff.get();
+										System.out.print(var);
+										str.append(var); //버퍼안의 내용을 한글자 한글자 while로 돌아가며 print함
 									}
+									str.append("\n");
 									buff.clear();
 									System.out.println();
 									// 쓰기가 가능 하다면
 									if (selected.isWritable())
 									{
-										String str = "이건 서버에서 보낸 데이터...";
+//										String str = "이건 서버에서 보낸 데이터...";
 										// 한글 인코딩
+										str.append("this msg is from server!! \n");
 										socketChannel.write(encoder.encode(CharBuffer.wrap(str + "")));
 										System.out.println("서버가 전달한 내용 : " + str);
 									}
