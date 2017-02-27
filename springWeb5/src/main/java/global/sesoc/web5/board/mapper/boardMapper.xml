@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 방명록정보 처리 SQL -->
+<mapper namespace="global.sesoc.web5.board.dao.IBoardMapper">
+	
+	<!-- 등록 -->
+	<insert id="insertBoard" parameterType="Board">
+		INSERT INTO board_web5 (
+			bno
+			, custid
+			, title
+			, content
+			<if test="original_file != null and saved_file != null">
+			, original_file
+			, saved_file
+			</if>
+		)
+		VALUES (
+			seq_board_web5.nextval
+			, #{custid}
+			, #{title}
+			, #{content}
+			<if test="original_file != null and saved_file != null">
+			, #{original_file}
+			, #{saved_file}
+			</if>
+		)
+	</insert>
+	
+	<!-- 글목록 -->
+	<select id="selectBoardList" parameterType="map" resultType="Board">
+		<![CDATA[
+		SELECT bno
+		, name custid
+		, title
+		, read_cnt
+		, NVL2(update_date
+		, TO_CHAR(update_date, 'YYYY-MM-DD')
+		, TO_CHAR(create_date, 'YYYY-MM-DD')) create_date
+		, original_file
+		, saved_file
+		, CASE WHEN sysdate-3 < create_date THEN 'T'
+		WHEN sysdate-3 > create_date THEN  'F' END is_new
+		, CASE WHEN read_cnt > 6 THEN  'T'  ELSE 'F' END is_hot
+		FROM board_web5 bor
+		INNER JOIN customer cus ON bor.custid = cus.custid
+		]]>
+		<where>
+			<if test='keyword != "" and keyword != null'>
+				<if test='type != "" and type != null'>
+					<if test='type == "title"'>
+						title LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test='type == "creator"'>
+						name LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test='type == "content"'>
+						content LIKE '%' || #{keyword} || '%'
+					</if>
+				</if>
+			</if>
+		</where>
+		ORDER BY create_date DESC, bno DESC
+		
+	</select>
+	
+	<!-- 글목록 총 개수 -->
+	<select id="selectBoardTotalCount" parameterType="map" resultType="int">
+		SELECT count(bno) FROM board_web5 bor
+		INNER JOIN customer cus ON bor.custid = cus.custid
+		<where>
+			<if test='keyword != "" and keyword != null'>
+				<if test='type != "" and type != null'>
+					<if test='type == "title"'>
+						title LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test='type == "creator"'>
+						name LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test='type == "content"'>
+						content LIKE '%' || #{keyword} || '%'
+					</if>
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 검색 -->
+	<select id="selectBoard" parameterType="int" resultType="Board">
+		SELECT bno
+		, bor.custid
+		, name creator_name
+		, title
+		, content
+		, read_cnt
+		, TO_CHAR(create_date, 'YYYY-MM-DD (am)hh:mi:ss') create_date
+		, original_file
+		, saved_file
+		FROM board_web5 bor
+		INNER JOIN customer cus ON bor.custid = cus.custid
+		WHERE bno = #{bno}
+	</select>
+	
+	<!-- 삭제 -->
+	<delete id="deleteBoard" parameterType="map">
+		DELETE FROM board_web5
+		WHERE bno = #{bno} AND custid = #{id}
+	</delete>
+	
+	<!-- 수정 -->
+	<update id="updateBoard" parameterType="Board">
+		UPDATE board_web5
+		SET title = #{title}
+		, content = #{content}
+		, update_date = sysdate
+		<if test="original_file != null and saved_file != null">
+		, original_file = #{original_file}
+		, saved_file = #{saved_file}
+		</if>
+		WHERE bno = #{bno} and custid = #{custid}
+	</update>
+	
+	<!-- 댓글 등록 -->
+	<insert id="insertReply" parameterType="Reply">
+		INSERT INTO 
+			reply_web5 
+			(repno
+			, bno
+			, custid
+			, text)
+		VALUES
+			(seq_reply_web5.nextval
+			, #{bno}
+			, #{custid}
+			, #{text}
+			)
+	</insert>
+	
+	<!-- 글번호에 해당하는 댓글목록 -->
+	<select id="selectReply" parameterType="int" resultType="Reply">
+		SELECT repno
+		, bno
+		, rep.custid custid
+		, name creator_name
+		, text
+		, NVL2(update_date
+		, TO_CHAR(update_date, 'YYYY-MM-DD (am)hh:mi:ss')
+		, TO_CHAR(create_date, 'YYYY-MM-DD (am)hh:mi:ss')) create_date
+		FROM reply_web5 rep
+		INNER JOIN customer cus ON rep.custid = cus.custid
+		WHERE bno = #{no}
+		ORDER BY create_date DESC, repno DESC
+	</select>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="Reply">
+		DELETE FROM reply_web5
+		WHERE 
+			repno = #{repno} 
+			AND custid = #{custid}
+			AND bno = #{bno}
+	</delete>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateReply" parameterType="Reply">
+		UPDATE reply_web5
+		SET text = #{text}
+			, update_date = sysdate
+		WHERE 
+			repno = #{repno} 
+			AND custid = #{custid}
+			AND bno = #{bno}
+	</update>
+</mapper>
