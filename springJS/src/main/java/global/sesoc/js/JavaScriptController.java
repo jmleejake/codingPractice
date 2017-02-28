@@ -15,5 +15,15 @@ private static final Logger logger = LoggerFactory.getLogger(JavaScriptControlle
 	public String callJs1() {
 		return "js1";
 	}
+	
+	@RequestMapping(value = "js2", method = RequestMethod.GET)
+	public String callJs2() {
+		return "js-string";
+	}
+	
+	@RequestMapping(value = "js3", method = RequestMethod.GET)
+	public String callJs3() {
+		return "js-browserobject";
+	}
 
 }
