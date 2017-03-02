@@ -49,7 +49,12 @@ function navigatorObj() {
 // 	alert(navigator.userAgent);
 	var check_pc = ["Windows", "Chrome"];
 	var check_phone = ["iPhone", "Mobile"];
-	console.log(navigator.userAgent);
+	console.log(navigator.userAgent)
+	console.log(navigator.appCodeName);
+	console.log(navigator.appName);
+	console.log(navigator.appVersion);
+	console.log(navigator.platform);
+	
 	var user = navigator.userAgent;
 	for(var i=0; i<check_pc.length; i++) {
 		console.log(check_pc[i]);
@@ -69,11 +74,6 @@ function navigatorObj() {
 			return;
 		}
 	}
-	console.log(navigator.userAgent)
-	console.log(navigator.appCodeName);
-	console.log(navigator.appName);
-	console.log(navigator.appVersion);
-	console.log(navigator.platform);
 }
 
 function addTextBox() {
@@ -96,10 +96,10 @@ function addTextBox() {
 	<input type="button" value="navigator객체" onclick="javascript:navigatorObj();">
 	</li>
 	<li>
-	<input type="button" value="location객체" onclick="javascript:locationObj();">
+	<input type="button" value="location객체" >
 	</li>
 	<li>
-	<input type="button" value="screen객체" onclick="javascript:screenObj();">
+	<input type="button" value="screen객체" >
 	</li>
 </ul>
 
