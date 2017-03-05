@@ -35,5 +35,15 @@ private static final Logger logger = LoggerFactory.getLogger(JavaScriptControlle
 	public String callJQuery2() {
 		return "jq2";
 	}
+	
+	@RequestMapping("jq3")
+	public String callJQuery3() {
+		return "jq3";
+	}
+	
+	@RequestMapping("jq4")
+	public String callJQuery4() {
+		return "jq4";
+	}
 
 }

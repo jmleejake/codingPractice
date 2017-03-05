@@ -23,6 +23,8 @@
 		<ul>
 			<li><a href="jq1">연습1</a></li>
 			<li><a href="jq2">연습2</a></li>
+			<li><a href="jq3">연습3</a></li>
+			<li><a href="jq4">연습4</a></li>
 		</ul>
 	</li>
 </ul>
