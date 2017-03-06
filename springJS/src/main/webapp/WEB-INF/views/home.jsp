@@ -27,6 +27,13 @@
 			<li><a href="jq4">연습4</a></li>
 		</ul>
 	</li>
+	<li>
+		[Ajax]
+		<ul>
+			<li><a href="at1">연습1</a></li>
+			<li><a href="at2">연습2</a></li>
+		</ul>
+	</li>
 </ul>
 </body>
 </html>
