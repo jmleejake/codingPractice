@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Trade">
+  <typeAlias alias="Trade" type="bank.model.trade.TradeBean"/>
+  <resultMap id="TradeResult" class="Trade">
+    <result property="trdNum" column="trdNum"/>
+    <result property="accNum" column="accNum"/>
+    <result property="trdBalance" column="trdBalance"/> 
+    <result property="trdCode" column="trdCode"/>
+    <result property="trdMoney" column="trdMoney"/>
+    <result property="trdDate" column="trdDate"/>
+  </resultMap>
+  
+  <select id="getRetrieveTrds" parameterClass="java.lang.String" resultMap="TradeResult">
+    SELECT * FROM trade WHERE accNum= #accNum# order by trdNum asc
+  </select>
+  
+  <select id="getRetrieveTrd" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+    select count(*) from trade where accNum = #accNum#  
+  </select>   
+   
+  <update id="infoTrd" parameterClass="Trade">
+    INSERT INTO trade (
+      trdNum, 
+      accNum,     
+      trdBalance,
+      trdCode,
+      trdMoney,
+      trdDate
+    )
+    values (
+     #trdNum#, #accNum#, #trdBalance#, #trdCode#, #trdMoney#, SYSDATE
+    )
+  </update>  
+  
+  <select id="getCountTrds" resultClass="java.lang.Integer">
+    select count(*) from trade
+  </select>
+  
+  <select id="getPageTrd" parameterClass="Trade" resultMap="TradeResult">
+    select
+      trdNum as trdNum, 
+      accNum as accNum,     
+      trdBalance as trdBalance,
+      trdCode as trdCode,
+      trdMoney as trdMoney,
+      trdDate as trdDate   
+    from (select
+    		/*index_desc(trade, INDEXTRD)*/
+    		trdNum as trdNum, 
+      		accNum as accNum,     
+      		trdBalance as trdBalance,
+      		trdCode as trdCode,
+      		trdMoney as trdMoney,
+      		trdDate as trdDate,   
+      		ceil(rownum/7) as page
+      	  from trade where accNum = #accNum#)
+    where page = #page#
+  </select> 
+  
+  <delete id="setRemoveTrd" parameterClass="java.lang.String">
+    delete from trade where accNum = #accNum#
+  </delete>
+  
+</sqlMap>

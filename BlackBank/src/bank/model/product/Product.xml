@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="Product">
+  <typeAlias alias="Product" type="bank.model.product.ProductBean"/>
+  <resultMap id="ProductResult" class="Product">
+    <result property="prdCode" column="prdCode"/>
+    <result property="prdName" column="prdName"/>
+    <result property="interest" column="interest"/>
+    <result property="adminPw" column="adminPw"/>
+  </resultMap>
+  
+  <select id="getAllRetrievePrds" resultMap="ProductResult">
+  		select * from product ORDER BY prdCode asc
+  </select>
+  
+  <select id="getRetrievePrd" parameterClass="java.lang.String" resultClass="Product">
+    select * from product where prdCode = #prdCode#
+  </select>   
+   
+  <update id="setRegisterPrd" parameterClass="Product">
+    insert into product (
+    	prdCode,
+      	prdName,
+      	interest,
+      	adminPw
+    	)
+    values (
+    	#prdCode#, #prdName#, #interest#, #adminPw#
+    )    
+  </update>
+
+  <update id="setModifyPrd" parameterClass="Product">
+    update product set
+    	prdName = #prdName#,
+      	interest = #interest#     
+    where
+      	prdCode = #prdCode#
+  </update>
+  
+  <delete id="setDeletePrd" parameterClass="Product">
+ 	   delete from product where prdCode = #prdCode# and adminPw = #adminPw#
+  </delete>
+  
+</sqlMap>

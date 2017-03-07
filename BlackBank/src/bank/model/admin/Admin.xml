@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Admin">
+  <typeAlias alias="Admin" type="bank.model.admin.AdminBean"/>
+  <resultMap id="AdminResult" class="Admin">
+    <result property="adId" column="adId"/> 
+    <result property="adPw" column="adPw"/>
+    <result property="adName" column="adName"/> 
+    <result property="adRrn" column="adRrn"/>
+    <result property="adTel" column="adTel"/>
+    <result property="adCel" column="adCel"/>
+    <result property="adAddr" column="adAddr"/>
+    <result property="adEmail" column="adEmail"/>
+  </resultMap>
+ 
+  <select id="getRetrieveAdIdPw" parameterClass="Admin" resultClass="Admin">
+    select
+      adId as adId,
+      adPw as adPw,
+      adName as adName,
+      adRrn as adRrn,
+      adTel as adTel,
+      adCel as adCel,
+      adAddr as adAddr,
+      adEmail as adEmail
+    from admin
+    where adId = #adId# and adPw = #adPw#
+  </select>
+  
+  
+</sqlMap>

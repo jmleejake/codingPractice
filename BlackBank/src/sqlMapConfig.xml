@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>  
+  <settings useStatementNamespaces="true"/>
+  	<transactionManager type="JDBC" >
+		<dataSource type="JNDI">
+			<property name="DBJndiContext" value="java:comp/env/jdbc/myoracle" />
+		</dataSource>
+	</transactionManager>
+	
+  <sqlMap resource="bank/model/client/Client.xml"/>
+  <sqlMap resource="bank/model/teller/Teller.xml"/>
+  <sqlMap resource="bank/model/account/Account.xml"/>
+  <sqlMap resource="bank/model/trade/Trade.xml"/>
+  <sqlMap resource="bank/model/admin/Admin.xml" />
+  <sqlMap resource="bank/model/product/Product.xml" />
+</sqlMapConfig>

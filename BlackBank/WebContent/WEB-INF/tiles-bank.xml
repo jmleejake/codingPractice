@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+       
+<tiles-definitions>
+
+	<definition name="bankMain" template="/template/layout.jsp">
+		<put-attribute name="title" value="메인" />
+		<put-attribute name="header" value="/teller/login.jsp"/>
+		<put-attribute name="menu" value="" />
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	<definition name="bank1" template="/template/layout.jsp">
+		<put-attribute name="title" value="리스트" />
+		<put-attribute name="header" value="/teller/ok.jsp" />
+		<put-attribute name="menu" value="/client/list.jsp" />
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	<definition name="bank2" template="/template/layout.jsp">
+		<put-attribute name="title" value="고객조회" />
+		<put-attribute name="header" value="/teller/ok.jsp" />
+		<put-attribute name="menu" value="/client/read.jsp" />
+		<put-attribute name="body" value="/trade/tradeSelect.jsp" />
+	</definition>
+	
+	<definition name="bank3" template="/template/layout.jsp">
+		<put-attribute name="title" value="고객가입" />
+		<put-attribute name="header" value="/teller/ok.jsp" />
+		<put-attribute name="menu" value="/client/write.jsp" />
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	<definition name="bank4" template="/template/layout.jsp">
+		<put-attribute name="title" value="수정" />
+		<put-attribute name="header" value="/teller/ok.jsp" />
+		<put-attribute name="menu" value="/client/update.jsp" />
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	<definition name="bank5" template="/template/layout.jsp">
+		<put-attribute name="title" value="텔러가입" />
+		<put-attribute name="header" value="/admin/adOk.jsp" />
+		<put-attribute name="menu" value="/teller/join.jsp" />
+		<put-attribute name="body" value="/teller/joinCheck.jsp" />
+	</definition>
+	
+	<definition name="bank6" template="/template/layout.jsp">
+		<put-attribute name="title" value="텔러조회" />
+		<put-attribute name="header" value="/admin/adOk.jsp" />
+		<put-attribute name="menu" value="/teller/list.jsp" />
+		<put-attribute name="body" value="/teller/read.jsp" />
+	</definition>
+	
+	<definition name="bank7" template="/template/layout.jsp">
+		<put-attribute name="title" value="계좌가입" />
+		<put-attribute name="header" value="/teller/ok.jsp" />
+		<put-attribute name="menu" value="/account/register.jsp" />
+		<put-attribute name="body" value="/account/registerCheck.jsp" />
+	</definition>
+	
+	<definition name="bank8" template="/template/layout.jsp">
+		<put-attribute name="title" value="계좌삭제" />
+		<put-attribute name="header" value="/teller/ok.jsp" />
+		<put-attribute name="menu" value="/account/delete.jsp" />
+		<put-attribute name="body" value="" />
+	</definition>
+	
+	<definition name="bank9" template="/template/layout.jsp">
+		<put-attribute name="title" value="계좌삭제" />
+		<put-attribute name="header" value="/teller/ok.jsp" />
+		<put-attribute name="menu" value="/teller/updateForm.jsp" />
+		<put-attribute name="body" value="/teller/joinCheck.jsp" />
+	</definition>
+	
+	<definition name="adBank" template="/template/layout.jsp">
+		<put-attribute name="title" value="관리자타일" />
+		<put-attribute name="header" value="/admin/adOk.jsp" />
+		<put-attribute name="menu" value="/admin/tellerBusiness.jsp" />
+		<put-attribute name="body" value="/product/allPrdList.jsp" />
+	</definition>
+	
+	<definition name="adBank1" template="/template/layout.jsp">
+		<put-attribute name="title" value="상품수정" />
+		<put-attribute name="header" value="/admin/adOk.jsp" />
+		<put-attribute name="menu" value="/product/prdRead.jsp" />
+		<put-attribute name="body" value="/product/prdUpdate.jsp" />
+	</definition>
+	
+	<definition name="adBank2" template="/template/layout.jsp">
+		<put-attribute name="title" value="상품등록" />
+		<put-attribute name="header" value="/admin/adOk.jsp" />
+		<put-attribute name="menu" value="" />
+		<put-attribute name="body" value="/product/prdRegister.jsp" />
+	</definition>
+	
+	<definition name="adBank3" template="/template/layout.jsp">
+		<put-attribute name="title" value="상품관리3" />
+		<put-attribute name="header" value="/admin/adOk.jsp" />
+		<put-attribute name="menu" value="" />
+		<put-attribute name="body" value="/product/prdDelete.jsp" />
+	</definition>
+	
+</tiles-definitions>
