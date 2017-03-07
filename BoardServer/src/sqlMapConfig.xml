@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+    
+<sqlMapConfig>
+    <!-- config 프로퍼티즈 파일을 사용한 DB Connection -->
+	<properties resource="config.properties"/>
+    
+    <!-- Dto xml파일의 sqlMap namespace를 Dao에서 호출할때 쓰기위한 setting -->
+    <settings useStatementNamespaces="true"/>
+            
+    <transactionManager type="JDBC" commitRequired="false">
+        <dataSource type="SIMPLE">
+            <property name="JDBC.Driver"  value="${DB_DRIVER}"/>
+            <property name="JDBC.ConnectionURL"  value="${DB_URL}"/>
+            <property name="JDBC.Username"  value="${DB_USERNAME}"/>
+            <property name="JDBC.Password"  value="${DB_PASSWORD}"/>
+        </dataSource>
+    </transactionManager>
+    
+    <sqlMap resource="exsoft/board/model/board/Board_${DB_DBMS}.xml"/>
+    <sqlMap resource="exsoft/board/model/member/Member_${DB_DBMS}.xml"/>
+    <sqlMap resource="exsoft/board/model/file/File_${DB_DBMS}.xml"/>
+</sqlMapConfig>
