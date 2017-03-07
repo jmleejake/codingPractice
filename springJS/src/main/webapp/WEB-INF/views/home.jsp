@@ -32,6 +32,7 @@
 		<ul>
 			<li><a href="at1">연습1</a></li>
 			<li><a href="at2">연습2</a></li>
+			<li><a href="comm">댓글달기 연습 (+DB)</a></li>
 		</ul>
 	</li>
 </ul>
