@@ -11,6 +11,124 @@
 <link rel="stylesheet" href="../resources/css/board.css">
 <!-- JS파일 불러오기 -->
 <script src="../resources/js/board.js"></script>
+<script src="../resources/js/jquery-3.1.1.min.js"></script>
+
+<script>
+$(document).ready(function() {
+	$("#rep_submit").on("click", replyCheck);
+	$(".img_rep").on("click", replyAction);
+});
+
+
+function replyCheck() {
+	var text = document.getElementById("v_text");
+	
+	if(text.value == "") {
+		alert("댓글 내용이 없다데쓰!!!!");
+		text.focus();
+		return;
+	}
+	
+	$.ajax({
+		url:"rep_add"
+		, type:"post"
+		, data:$("#add_frm").serialize()
+		, dataType:"json"
+		, success: function(list) {
+			//$("#v_text").val("");
+			text.value = "";
+			showList(list);
+		}
+		, error: function(e) {
+			alert(JSON.stringify(e));
+		}
+	});
+}
+
+function showList(repList) {
+	var login_id = $("#login_id").val();
+	$("#rep_list").html("");
+	var txt = "<table> ";
+	$.each(repList, function(i, rep) {
+		txt += "<tr>";
+		txt += "<th>" + rep.creator_name;
+		txt += "<input type='hidden' id='login_id' value='" + login_id + "''>";
+		txt += "</th>";
+		txt += "<td>" + rep.create_date + "</td>";
+		txt += "<td>" + rep.text + "</td>";
+ 		txt += "<td>";
+ 		if(login_id == rep.custid) {
+ 			txt += "<img src='../resources/img/modify.png' class='img_rep' act='mod' repno='" + rep.repno + "' bno='" + rep.bno + "' custid='" + rep.custid + "' txt='" + rep.text + "' >";
+ 		}
+ 		txt += "</td>";
+ 		txt += "<td>";
+ 		if(login_id == rep.custid) {
+ 			txt += "<img src='../resources/img/delete.png' class='img_rep' act='del' repno='" + rep.repno + "' bno='" + rep.bno + "' custid='" + rep.custid + "' >";
+ 		}
+ 		txt += "</td>";
+		txt += "</tr>";
+	});
+	txt += "</table>";
+	$("#rep_list").html(txt);
+	$(".img_rep").on("click", replyAction);
+}
+
+function replyAction() {
+	var repno = $(this).attr("repno");
+	var action = $(this).attr("act");
+	var bno = $(this).attr("bno");
+	var custid = $(this).attr("custid");
+	
+	$("#repno").val(repno);
+	$("#bno").val(bno);
+	$("#custid").val(custid);
+	
+	if(action == 'del') {
+		var delConfirm = confirm("정말 삭제합니까?");
+		if(delConfirm) {
+			$.ajax({
+				url:"rep_del"
+				, type:"post"
+				, data:$("#rep_frm").serialize()
+				, dataType:"json"
+				, success: function(list) {
+					showList(list);
+				}
+				, error: function(e) {
+					alert(JSON.stringify(e));
+				} 
+			});
+		}
+	} else if (action == 'mod') {
+		var modConfirm = confirm("정말 수정합니까?");
+		if(modConfirm) {
+			var modFrm = "<input type='text' id='v_modt' name='text' >";
+			modFrm += "<input type='button' id='mod_submit' value='수정'>";
+			$("#mod_frm").html(modFrm);
+			$("#v_modt").val($(this).attr("txt"));
+			$("#mod_submit").on("click", mod_submit);
+		}
+	}
+	
+}
+
+function mod_submit() {
+	$.ajax({
+		url:"rep_mod"
+		, type:"post"
+		, data:$("#rep_frm").serialize()
+		, dataType:"json"
+		, success: function(list) {
+			showList(list);
+			$("#v_modt").val("");
+			$("#mod_frm").html("");
+		}
+		, error: function(e) {
+			alert(JSON.stringify(e));
+		} 
+	});
+}
+</script>
 </head>
 <body>
 <h2>[게시판 글읽기]</h2>
@@ -59,26 +177,31 @@ onclick="updateCheck(${borvo.bno})">
 </div>
 <br>
 <br>
+
 <div id="div_rep">
 <c:if test="${cust.custid !=  null}">
-<form id="add_frm" action="rep_add" method="post" onsubmit="return replyCheck();">
+<form id="add_frm">
 댓글
 <input type="hidden" name="bno" value="${borvo.bno}">
-<c:if test="isUpdateStatus()">
-<input type="hidden" id="mod_repno" name="repno" >
-<input type="hidden" id="mod_custid" name="custid" >
-</c:if>
 
 <input type="text" id="v_text" name="text">
-<input type="submit" id="rep_submit" value="등록">
+<input type="button" id="rep_submit" value="등록">
 </form>
 </c:if>
 
+<form id="rep_frm" method="post">
+	<input type="hidden" id="repno" name="repno" >
+	<input type="hidden" id="bno" name="bno" >
+	<input type="hidden" id="custid" name="custid" >
+	<div id="mod_frm"></div>
+</form>
 
+<div id="rep_list">
 <table>
 	<c:forEach var="repvo" items="${reps }">
 	<tr>
 		<th>
+		<input type="hidden" id="login_id" value="${cust.custid }">
 		${repvo.creator_name } (${repvo.custid })
 		</th>
 		<td>
@@ -89,28 +212,20 @@ onclick="updateCheck(${borvo.bno})">
 		</td>
 		<td>
 		<c:if test="${cust.custid ==  repvo.custid}">
-		<input type="hidden" id="repno${repvo.repno }" value="${repvo.repno }">
-		<input type="hidden" id="bno${repvo.repno }" value="${repvo.bno }">
-		<input type="hidden" id="custid${repvo.repno }" value="${repvo.custid }">
-		<input type="hidden" id="text${repvo.repno }" value="${repvo.text }">
-		<img src="../resources/img/modify.png"
-		onclick="replyAction(${repvo.repno}, 'mod');" >
+		<img src='../resources/img/modify.png' class='img_rep' act='mod' repno='${repvo.repno }' 
+		bno='${repvo.bno }' custid='${repvo.custid }' txt='${repvo.text }'>
 		</c:if>
 		</td>
 		<td>
 		<c:if test="${cust.custid ==  repvo.custid}">
-		<img src="../resources/img/delete.png"
-		onclick="replyAction(${repvo.repno}, 'del');" >
+		<img src='../resources/img/delete.png' class='img_rep' act='del' repno='${repvo.repno }' 
+		bno='${repvo.bno }' custid='${repvo.custid }'>
 		</c:if>
 		</td>
 	</tr>
 	</c:forEach>
 </table>
-<form id="rep_frm" method="post">
-	<input type="hidden" id="repno" name="repno" >
-	<input type="hidden" id="bno" name="bno" >
-	<input type="hidden" id="custid" name="custid" >
-</form>
+</div>
 </div>
 </body>
 </html>

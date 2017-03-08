@@ -1,20 +1,14 @@
 package global.sesoc.web5.board.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +21,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import global.sesoc.web5.board.dao.BoardDAO;
@@ -309,12 +304,26 @@ public class BoardController {
 		return "redirect:read?bno=" + vo.getBno();
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="rep_add", method=RequestMethod.POST)
+	public ArrayList<ReplyVO> addReply(
+			ReplyVO vo
+			, HttpSession session) {
+		log.debug("addReply :: POST :: \nvo={}", vo);
+		
+		String id = ((CustomerVO) session.getAttribute("cust")).getCustid();
+		vo.setCustid(id);
+		
+		dao.insertReply(vo);
+		
+		return dao.selectReply(vo.getBno());
+	}
+	/*
 	@RequestMapping(value="rep_add", method=RequestMethod.POST)
 	public String addReply(
 			ReplyVO vo
-			, Model model
 			, HttpSession session) {
-		log.debug("addReply :: POST :: \n{}");
+		log.debug("addReply :: POST :: \nvo={}", vo);
 		
 		String id = ((CustomerVO) session.getAttribute("cust")).getCustid();
 		vo.setCustid(id);
@@ -323,7 +332,23 @@ public class BoardController {
 		
 		return "redirect:read?bno=" + vo.getBno();
 	}
+	*/
 	
+	@ResponseBody
+	@RequestMapping(value="rep_del", method=RequestMethod.POST)
+	public ArrayList<ReplyVO> deleteReply(
+			ReplyVO vo
+			, HttpSession session) {
+		log.debug("deleteReply :: POST :: \n{}", vo);
+		
+		String id = ((CustomerVO) session.getAttribute("cust")).getCustid();
+		if(id.equals(vo.getCustid())) {
+			dao.deleteReply(vo);
+		}
+		return dao.selectReply(vo.getBno());
+	}
+	
+	/*
 	@RequestMapping(value="rep_del", method=RequestMethod.POST)
 	public String deleteReply(
 			ReplyVO vo
@@ -336,8 +361,23 @@ public class BoardController {
 		}
 		return "redirect:read?bno=" + vo.getBno();
 	}
+	*/
 	
+	@ResponseBody
+	@RequestMapping(value="rep_mod", method=RequestMethod.POST)
+	public ArrayList<ReplyVO> updateReply(
+			ReplyVO vo
+			, HttpSession session) {
+		log.debug("updateReply :: POST :: \n{}", vo);
+		
+		String id = ((CustomerVO) session.getAttribute("cust")).getCustid();
+		if(id.equals(vo.getCustid())) {
+			dao.updateReply(vo);
+		}
+		return dao.selectReply(vo.getBno());
+	}
 	
+	/*
 	@RequestMapping(value="rep_mod", method=RequestMethod.POST)
 	public String updateReply(
 			ReplyVO vo
@@ -350,4 +390,5 @@ public class BoardController {
 		}
 		return "redirect:read?bno=" + vo.getBno();
 	}
+	*/
 }

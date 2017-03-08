@@ -6,11 +6,8 @@ $(document).ready(function() {
 		if(hash==href.substr(0,href.length-5)){
 			var toLoad = hash+'.html #content';
 			$('#content').load(toLoad)
-		}											
-	});
-
-	$('#nav li a'){
-								  
+		}
+		
 		var toLoad = $(this).attr('href')+' #content';
 		$('#content').hide('fast',loadContent);
 		$('#load').remove();
@@ -27,7 +24,6 @@ $(document).ready(function() {
 			$('#load').fadeOut('normal');
 		}
 		return false;
-		
-	}
+	});
 
 });
