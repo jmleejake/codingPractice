@@ -2,6 +2,10 @@ package excelTest;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -13,33 +17,67 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import sqliteTest.DataInfo;
 
 public final class ExcelTestMain {
 	
 	/**
-	 *  ExcelÆÄÀÏ¿¡ Write
+	 *  ExcelíŒŒì¼ì— Write
 	 * 
 	 * @param file
 	 * @param data
 	 * @throws Exception
 	 */
-	public final static void simpleExcelWrite(File file, String data[][]) throws Exception {
-		WritableWorkbook workbook = null; //dddd 123
+	public final static void simpleExcelWrite(
+			File file
+			, List<DataVO> dto_list
+			, String[] members
+			, String[] cell_headers
+			, int[] cell_widths) throws Exception {
+		WritableWorkbook workbook = null;
 		WritableSheet sheet = null;
 
 		try {
 
-			workbook = Workbook.createWorkbook(file); // ÁöÁ¤µÈ ÆÄÀÏ¸í °æ·Î·Î ¿öÅ©ºÏ Áï ¿¢¼¿ÆÄÀÏÀ» ¸¸µì´Ï´Ù.
-			workbook.createSheet("Sheet", 0); // ÁöÁ¤ÇÑ ¿öÅ©ºÏ¿¡ ½ËÆ®¸¦ ¸¸µì´Ï´Ù. "Sheet" °¡ ½ËÆ®¸íÀÌ µË´Ï´Ù.
-			sheet = workbook.getSheet(0); // ½ÃÆ®¸¦ °¡Á®¿É´Ï´Ù.
+			workbook = Workbook.createWorkbook(file); // ì§€ì •ëœ íŒŒì¼ëª… ê²½ë¡œë¡œ ì›Œí¬ë¶ ì¦‰ ì—‘ì…€íŒŒì¼ì„ ë§Œë“­ë‹ˆë‹¤.
+			workbook.createSheet("Sheet", 0); // ì§€ì •í•œ ì›Œí¬ë¶ì— ì‹¯íŠ¸ë¥¼ ë§Œë“­ë‹ˆë‹¤. "Sheet" ê°€ ì‹¯íŠ¸ëª…ì´ ë©ë‹ˆë‹¤.
+			sheet = workbook.getSheet(0); // ì‹œíŠ¸ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 
-			WritableCellFormat cellFormat = new WritableCellFormat(); // ¼¿ÀÇ ½ºÅ¸ÀÏÀ» ÁöÁ¤ÇÏ±â À§ÇÑ ºÎºĞÀÔ´Ï´Ù.
-			cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // ¼¿ÀÇ ½ºÅ¸ÀÏÀ» ÁöÁ¤ÇÕ´Ï´Ù. Å×µÎ¸®¿¡ ¶óÀÎ±×¸®´Â°Å¿¡¿ä
+			WritableCellFormat cellFormat = new WritableCellFormat(); // ì…€ì˜ ìŠ¤íƒ€ì¼ì„ ì§€ì •í•˜ê¸° ìœ„í•œ ë¶€ë¶„ì…ë‹ˆë‹¤.
+			cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // ì…€ì˜ ìŠ¤íƒ€ì¼ì„ ì§€ì •í•©ë‹ˆë‹¤. í…Œë‘ë¦¬ì— ë¼ì¸ê·¸ë¦¬ëŠ”ê±°ì—ìš”
 
-			// ºù±Ûºù±Û µ¹¸®¸é¼­ ¿¢¼¿¿¡ µ¥ÀÌÅÍ¸¦ ÀÛ¼ºÇÕ´Ï´Ù.
-			for (int row = 0; row < data.length; row++) {
-				for (int col = 0; col < data[0].length; col++) {
-					Label label = new jxl.write.Label(col, row, (String) data[row][col], cellFormat);
+			// ë¹™ê¸€ë¹™ê¸€ ëŒë¦¬ë©´ì„œ ì—‘ì…€ì— ë°ì´í„°ë¥¼ ì‘ì„±í•©ë‹ˆë‹¤.
+//			for (int row = 0; row < data.length; row++) {
+//				for (int col = 0; col < data[0].length; col++) {
+//					Label label = new jxl.write.Label(col, row, (String) data[row][col], cellFormat);
+//					sheet.addCell(label);
+//				}
+//			}
+			
+			int i = 0;
+
+			// í—¤ë” ìƒì„±ë¶€
+			for (String header : cell_headers) {
+				sheet.setColumnView(i, cell_widths[i]);
+				Label label = new Label(i++, 0, header);
+				sheet.addCell(label);
+			}
+			
+			// í—¤ë” í•˜ìœ„ ë°ì´í„° ìƒì„±ë¶€
+			int j = 0;
+
+			ArrayList<HashMap<String, Object>> memList = new ArrayList<>();
+			for (DataVO dto : dto_list) {
+				getMemberFields(memList, dto, true);
+			}
+			
+			for (HashMap<String, Object> mem : memList) {
+				i = 0;
+				j++;
+				for (String member : members) {
+					Label label = new Label(i++, j,
+							mem.get(member) != null ? mem
+									.get(member).toString() : "");
 					sheet.addCell(label);
 				}
 			}
@@ -59,11 +97,11 @@ public final class ExcelTestMain {
 				// e.printStackTrace();
 			}
 		} 
-		//[ÃâÃ³] ÀÚ¹Ù<JAVA> JXL ÀÌ¿ëÇÏ¿© ¿¢¼¿¿¡ ¾²±â ÃÊ°£´Ü ¿¹Á¦|ÀÛ¼ºÀÚ ´Şºû
+		//[ì¶œì²˜] ìë°”<JAVA> JXL ì´ìš©í•˜ì—¬ ì—‘ì…€ì— ì“°ê¸° ì´ˆê°„ë‹¨ ì˜ˆì œ|ì‘ì„±ì ë‹¬ë¹›
 	}
 	
 	/**
-	 *  ExcelÆÄÀÏ Read
+	 *  ExcelíŒŒì¼ Read
 	 * 
 	 * @param targetFile
 	 * @return
@@ -78,29 +116,29 @@ public final class ExcelTestMain {
 		String[][] data = null;
 
 		try {
-			workbook = Workbook.getWorkbook(targetFile); // Á¸ÀçÇÏ´Â ¿¢¼¿ÆÄÀÏ °æ·Î¸¦ ÁöÁ¤
-			sheet = workbook.getSheet(0); // Ã¹¹øÂ° ½ÃÆ®¸¦ ÁöÁ¤ÇÕ´Ï´Ù.
+			workbook = Workbook.getWorkbook(targetFile); // ì¡´ì¬í•˜ëŠ” ì—‘ì…€íŒŒì¼ ê²½ë¡œë¥¼ ì§€ì •
+			sheet = workbook.getSheet(0); // ì²«ë²ˆì§¸ ì‹œíŠ¸ë¥¼ ì§€ì •í•©ë‹ˆë‹¤.
 
-			int rowCount = sheet.getRows(); // ÃÑ ·Î¿ì¼ö¸¦ °¡Á®¿É´Ï´Ù.
-			int colCount = sheet.getColumns(); // ÃÑ ¿­ÀÇ ¼ö¸¦ °¡Á®¿É´Ï´Ù.
+			int rowCount = sheet.getRows(); // ì´ ë¡œìš°ìˆ˜ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
+			int colCount = sheet.getColumns(); // ì´ ì—´ì˜ ìˆ˜ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
 
 			if (rowCount <= 0) {
-				throw new Exception("Read ÇÒ µ¥ÀÌÅÍ°¡ ¿¢¼¿¿¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+				throw new Exception("Read í•  ë°ì´í„°ê°€ ì—‘ì…€ì— ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 			}
 
 			data = new String[rowCount][colCount];
 
-			// ¿¢¼¿µ¥ÀÌÅÍ¸¦ ¹è¿­¿¡ ÀúÀå
+			// ì—‘ì…€ë°ì´í„°ë¥¼ ë°°ì—´ì— ì €ì¥
 			for (int i = 0; i < rowCount; i++) {
 				for (int k = 0; k < colCount; k++) {
-					Cell cell = sheet.getCell(k, i); // ÇØ´çÀ§Ä¡ÀÇ ¼¿À» °¡Á®¿À´Â ºÎºĞÀÔ´Ï´Ù.
+					Cell cell = sheet.getCell(k, i); // í•´ë‹¹ìœ„ì¹˜ì˜ ì…€ì„ ê°€ì ¸ì˜¤ëŠ” ë¶€ë¶„ì…ë‹ˆë‹¤.
 					if (cell == null)
 						continue;
-					data[i][k] = cell.getContents(); // °¡Á®¿Â ¼¿ÀÇ ½ÇÁ¦ ÄÜÅÙÃ÷ Áï µ¥ÀÌÅÍ(¹®ÀÚ¿­)¸¦ °¡Á®¿À´Â ºÎºĞÀÔ´Ï´Ù.
+					data[i][k] = cell.getContents(); // ê°€ì ¸ì˜¨ ì…€ì˜ ì‹¤ì œ ì½˜í…ì¸  ì¦‰ ë°ì´í„°(ë¬¸ìì—´)ë¥¼ ê°€ì ¸ì˜¤ëŠ” ë¶€ë¶„ì…ë‹ˆë‹¤.
 				}
 			}
 
-			// µ¥ÀÌÅÍ °ËÁõ Å×½ºÆ®
+			// ë°ì´í„° ê²€ì¦ í…ŒìŠ¤íŠ¸
 			for (int r = 0; r < data.length; r++) {
 				for (int c = 0; c < data[0].length; c++) {
 					System.out.print("data ["+r+"]["+c+"] : "+data[r][c] + " ");
@@ -120,11 +158,51 @@ public final class ExcelTestMain {
 		}
 
 		return data;
-		// [ÃâÃ³] ÀÚ¹Ù<JAVA> JXLÀÌ¿ëÇÏ¿© ¿¢¼¿ ÀĞ±â ÃÊ°£´Ü ¿¹Á¦|ÀÛ¼ºÀÚ ´Şºû
+		// [ì¶œì²˜] ìë°”<JAVA> JXLì´ìš©í•˜ì—¬ ì—‘ì…€ ì½ê¸° ì´ˆê°„ë‹¨ ì˜ˆì œ|ì‘ì„±ì ë‹¬ë¹›
+	}
+	
+	/**
+	 *  VOê°’ ê°€ì ¸ì˜¤ê¸°
+	 * @param dto VOê°ì²´
+	 * @param isMemberLowerCase í‚¤ê°’ì„ ëª¨ì¡°ë¦¬ ì†Œë¬¸ìë¡œí•˜ëŠ”ê°€ ì—¬ë¶€
+	 * @return
+	 * @throws Exception
+	 */
+	public static void getMemberFields(ArrayList<HashMap<String, Object>> members, DataVO dto, boolean isMemberLowerCase) throws Exception {
+		HashMap<String, Object> map = new HashMap<>();
+		
+		System.out.println("getMemberFields");
+		if (dto != null) {
+			Class c = dto.getClass();
+			Method[] methods = c.getMethods();
+
+			System.out.println("----------------------------------------------");
+			for (int i = 0; i < methods.length; i++) {
+				String methodName = methods[i].getName();
+
+				if ((methodName.equals("getClass"))
+						|| (!methodName.subSequence(0, 3).equals("get")))
+					continue;
+				String fieldName = methodName.substring(3);
+				Object fieldValue = methods[i].invoke(dto, new Object[0]);
+				
+				System.out.println(String.format("fieldName: %s / fieldValue: %s", fieldName, fieldValue));
+
+				if (isMemberLowerCase) {
+					fieldName = fieldName.toLowerCase();
+				}
+
+				map.put(fieldName, fieldValue);
+			}
+			members.add(map);
+			System.out.println("----------------------------------------------");
+
+		}
 	}
 	
 	public static void main(String[] args) {
 		
+		/*
 		String[][] data = new String[][] { 
 				{ "COL1", "COL2", "COL3", "COL4" },
 				{ "DATA11", "DATA12", "DATA13", "DATA14" },
@@ -132,16 +210,41 @@ public final class ExcelTestMain {
 				{ "DATA31", "DATA32", "DATA33", "DATA34" },
 				{ "DATA41", "DATA42", "DATA43", "DATA44" },
 				{ "DATA51", "DATA52", "DATA53", "DATA54" }
-				};
+		};
+		*/
+		
+		/*
+		ArrayList<DataInfo> list = new ArrayList<>();
+		
+		list.add(new DataInfo(123, "namae", "BC123"));
+		list.add(new DataInfo(111, "namae1", "BC111"));
+		list.add(new DataInfo(222, "namae2", "BC222"));
+		list.add(new DataInfo(333, "namae3", "BC333"));
+		list.add(new DataInfo(444, "namae4", "BC444"));
+		
+		String[] members = {"id", "name", "book_code"};
+		String[] cell_headers = {"ì•„ì´ë””", "ì´ë¦„", "ì±…ì½”ë“œ"};
+		int[] cell_width = {50, 60, 60};
+		*/
+		
+		ArrayList<DataVO> list = new ArrayList<>();
+		
+		list.add(new HumanVO("123", "í™ê¸¸ë™", 10));
+		list.add(new HumanVO("456", "ê¸¸ë¼ì„", 15));
+		list.add(new HumanVO("789", "ì¥ë³´ë¦¬", 12));
+		
+		String[] members = {"jumin", "name", "age"};
+		String[] cell_headers = {"ì£¼ë¯¼ë²ˆí˜¸", "ì´ë¦„", "ë‚˜ì´"};
+		int[] cell_width = {50, 60, 30};
 
 		try {
-			simpleExcelWrite(new File("D:/test.xls"), data);
+			simpleExcelWrite(new File("D:/test.xls"), list, members, cell_headers, cell_width);
 			
 			simpleExcelRead(new File("D:/test.xls"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//[ÃâÃ³] ÀÚ¹Ù<JAVA> JXL ÀÌ¿ëÇÏ¿© ¿¢¼¿¿¡ ¾²±â ÃÊ°£´Ü ¿¹Á¦|ÀÛ¼ºÀÚ ´Şºû
+		//[ì¶œì²˜] ìë°”<JAVA> JXL ì´ìš©í•˜ì—¬ ì—‘ì…€ì— ì“°ê¸° ì´ˆê°„ë‹¨ ì˜ˆì œ|ì‘ì„±ì ë‹¬ë¹›
 	} 
 
 }

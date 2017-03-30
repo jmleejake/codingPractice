@@ -5,9 +5,16 @@ public class DataInfo {
 	private int id;
     private String name;
     private String book_code;
-     
-     
-    public int getId() {
+    
+    public DataInfo() {} // default constructor
+    
+    public DataInfo(int id, String name, String book_code) {
+		this.id = id;
+		this.name = name;
+		this.book_code = book_code;
+	}
+
+	public int getId() {
         return id;
     }
      
@@ -31,4 +38,9 @@ public class DataInfo {
         this.book_code = book_code;
     }
 
+	@Override
+	public String toString() {
+		return "DataInfo [id=" + id + ", name=" + name + ", book_code=" + book_code + "]";
+	}
+    
 }
