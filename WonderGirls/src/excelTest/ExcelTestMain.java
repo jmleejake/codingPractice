@@ -244,7 +244,7 @@ public final class ExcelTestMain {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//[출처] 자바<JAVA> JXL 이용하여 엑셀에 쓰기 초간단 예제|작성자 달빛
+		//[출처] 자바<JAVA> JXL 이용하여 엑셀에 쓰기 초간단 예제|작성자 달빛 
 	} 
 
 }
