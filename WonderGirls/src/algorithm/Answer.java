@@ -13,11 +13,20 @@ public class Answer implements Questions {
 
 	@Override
 	public String printFibonachi() {
-		int num = 1;
+		String ret = "";
+		
+		int no1 = 0;
+		int no2 = 1;
 		int sum = 0;
-		for(int i=1; i<9; i++) {
+		
+		ret = (no1+no2)+" ";
+		for(int i=1; i<10; i++) {
+			sum = no1 + no2;
+			ret += sum+" ";
+			no1 = no2;
+			no2 = sum;
 		}
-		return null;
+		return ret;
 	}
 
 	@Override
